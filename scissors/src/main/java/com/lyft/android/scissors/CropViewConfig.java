@@ -33,6 +33,7 @@ class CropViewConfig {
     private float minScale = DEFAULT_MINIMUM_SCALE;
     private int viewportOverlayPadding = DEFAULT_VIEWPORT_OVERLAY_PADDING;
     private int viewportOverlayColor = DEFAULT_VIEWPORT_OVERLAY_COLOR;
+    private boolean disableScaling = false;
 
     public int getViewportOverlayColor() {
         return viewportOverlayColor;
@@ -74,6 +75,14 @@ class CropViewConfig {
         this.minScale = minScale <= 0 ? DEFAULT_MINIMUM_SCALE : minScale;
     }
 
+    public boolean isDisableScaling() {
+        return disableScaling;
+    }
+
+    public void setDisableScaling(boolean disableScaling) {
+        this.disableScaling = disableScaling;
+    }
+
     public static CropViewConfig from(Context context, AttributeSet attrs) {
         final CropViewConfig cropViewConfig = new CropViewConfig();
 
@@ -98,12 +107,14 @@ class CropViewConfig {
                         CropViewConfig.DEFAULT_MINIMUM_SCALE));
 
         cropViewConfig.setViewportOverlayColor(
-            attributes.getColor(R.styleable.CropView_cropviewViewportOverlayColor,
-                CropViewConfig.DEFAULT_VIEWPORT_OVERLAY_COLOR));
+                attributes.getColor(R.styleable.CropView_cropviewViewportOverlayColor,
+                        CropViewConfig.DEFAULT_VIEWPORT_OVERLAY_COLOR));
 
         cropViewConfig.setViewportOverlayPadding(
-            attributes.getDimensionPixelSize(R.styleable.CropView_cropviewViewportOverlayPadding,
-                CropViewConfig.DEFAULT_VIEWPORT_OVERLAY_PADDING));
+                attributes.getDimensionPixelSize(R.styleable.CropView_cropviewViewportOverlayPadding,
+                        CropViewConfig.DEFAULT_VIEWPORT_OVERLAY_PADDING));
+
+        cropViewConfig.setDisableScaling(attributes.getBoolean(R.styleable.CropView_cropViewDisableScaling, false));
 
         attributes.recycle();
 

@@ -36,4 +36,4 @@ dependencies {
     provided 'com.android.support:support-v4:' + rootProject.ext.supportVersion
 }
 
-apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
+//apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

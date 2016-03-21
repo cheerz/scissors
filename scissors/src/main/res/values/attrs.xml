@@ -11,5 +11,7 @@
         <attr name="cropviewMaxScale" format="float" />
         <!-- Minimum  zoom level -->
         <attr name="cropviewMinScale" format="float" />
+        <!-- Disable scaling -->
+        <attr name="cropViewDisableScaling" format="boolean" />
     </declare-styleable>
 </resources>

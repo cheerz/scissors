@@ -44,6 +44,9 @@ class TouchManager {
     private float scale = -1.0f;
     private TouchPoint position = new TouchPoint();
 
+    private int originalPositionX = -1;
+    private int originalPositionY = -1;
+
     public TouchManager(final int maxNumberOfTouchPoints, final CropViewConfig cropViewConfig) {
         this.maxNumberOfTouchPoints = maxNumberOfTouchPoints;
         this.cropViewConfig = cropViewConfig;
@@ -69,7 +72,8 @@ class TouchManager {
         }
 
         handleDragGesture();
-        handlePinchGesture();
+        if (!cropViewConfig.isDisableScaling())
+            handlePinchGesture();
 
         if (isUpAction(event.getActionMasked())) {
             ensureInsideViewport();
@@ -92,8 +96,31 @@ class TouchManager {
         if (bitmapWidth > 0 && bitmapHeight > 0) {
             setMinimumScale();
             setLimits();
+            setOriginalPosition();
             ensureInsideViewport();
         }
+    }
+
+    private void setOriginalPosition() {
+        float x = getPosition(originalPositionX, horizontalLimit, scale);
+        float y = getPosition(originalPositionY, verticalLimit, scale);
+        position.set(x + imageBounds.right,
+                y + imageBounds.bottom);
+    }
+
+    private static float getPosition(int originalPosition, int limit, float scale) {
+        float x;
+        if (originalPosition < 0) {
+            x = 0;
+        } else {
+            x = -originalPosition * 1.0f * scale + limit;
+        }
+        return x;
+    }
+
+    public void setOriginalPosition(int x, int y) {
+        this.originalPositionX = x;
+        this.originalPositionY = y;
     }
 
     public int getViewportWidth() {
