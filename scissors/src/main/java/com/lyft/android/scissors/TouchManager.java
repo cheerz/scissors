@@ -94,7 +94,6 @@ class TouchManager {
         this.bitmapWidth = bitmapWidth;
         this.bitmapHeight = bitmapHeight;
         if (bitmapWidth > 0 && bitmapHeight > 0) {
-            scale = -1;
             setMinimumScale();
             setLimits();
             setOriginalPosition();
