@@ -34,6 +34,7 @@ class CropViewConfig {
     private int viewportOverlayPadding = DEFAULT_VIEWPORT_OVERLAY_PADDING;
     private int viewportOverlayColor = DEFAULT_VIEWPORT_OVERLAY_COLOR;
     private boolean disableScaling = false;
+    private boolean showGrid = false;
 
     public int getViewportOverlayColor() {
         return viewportOverlayColor;
@@ -83,6 +84,14 @@ class CropViewConfig {
         this.disableScaling = disableScaling;
     }
 
+    public boolean isShowGrid() {
+        return showGrid;
+    }
+
+    public void setShowGrid(boolean showGrid) {
+        this.showGrid = showGrid;
+    }
+
     public static CropViewConfig from(Context context, AttributeSet attrs) {
         final CropViewConfig cropViewConfig = new CropViewConfig();
 
@@ -115,6 +124,7 @@ class CropViewConfig {
                         CropViewConfig.DEFAULT_VIEWPORT_OVERLAY_PADDING));
 
         cropViewConfig.setDisableScaling(attributes.getBoolean(R.styleable.CropView_cropViewDisableScaling, false));
+        cropViewConfig.setShowGrid(attributes.getBoolean(R.styleable.CropView_cropViewShowGrid, false));
 
         attributes.recycle();
 

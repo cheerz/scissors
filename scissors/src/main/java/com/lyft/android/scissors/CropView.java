@@ -52,10 +52,13 @@ public class CropView extends ImageView {
     private Paint viewportPaint = new Paint();
     private Paint bitmapPaint = new Paint();
     private final Paint borderPaint = new Paint();
+    private final Paint gridPaint = new Paint();
 
     private Bitmap bitmap;
     private Matrix transform = new Matrix();
     private Extensions extensions;
+
+    private boolean showGrid;
 
     public CropView(Context context) {
         super(context);
@@ -72,6 +75,11 @@ public class CropView extends ImageView {
         CropViewConfig config = CropViewConfig.from(context, attrs);
 
         touchManager = new TouchManager(MAX_TOUCH_POINTS, config);
+
+        showGrid = config.isShowGrid();
+        gridPaint.setColor(Color.WHITE);
+        gridPaint.setStrokeWidth(2);
+        gridPaint.setStyle(Paint.Style.STROKE);
 
         bitmapPaint.setFilterBitmap(true);
         viewportPaint.setColor(config.getViewportOverlayColor());
@@ -111,6 +119,15 @@ public class CropView extends ImageView {
         canvas.drawRect(getWidth() - left, top, getWidth(), getHeight() - top, viewportPaint);
         canvas.drawRect(0, getHeight() - top, getWidth(), getHeight(), viewportPaint);
 
+        drawBorder(canvas, viewportWidth, viewportHeight, left, top);
+
+        if (showGrid)
+            drawGrid(canvas, viewportWidth, viewportHeight, left, top);
+
+
+    }
+
+    private void drawBorder(Canvas canvas, int viewportWidth, int viewportHeight, int left, int top) {
         float[] border = new float[]{
                 left, top, left + viewportWidth, top,
                 left + viewportWidth, top, left + viewportWidth, top + viewportHeight,
@@ -120,6 +137,14 @@ public class CropView extends ImageView {
 
         canvas.drawLines(border, borderPaint);
     }
+
+    private void drawGrid(Canvas canvas, int viewportWidth, int viewportHeight, int left, int top) {
+        canvas.drawLine(left + viewportWidth / 3, top + 0, left + viewportWidth / 3, top + viewportHeight, gridPaint);
+        canvas.drawLine(left + 2 * viewportWidth / 3, top + 0, left + 2 * viewportWidth / 3, top + viewportHeight, gridPaint);
+        canvas.drawLine(left + 0, top + viewportHeight / 3, left + viewportWidth, top + viewportHeight / 3, gridPaint);
+        canvas.drawLine(left + 0, top + 2 * viewportHeight / 3, left + viewportWidth, top + 2 * viewportHeight / 3, gridPaint);
+    }
+
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
