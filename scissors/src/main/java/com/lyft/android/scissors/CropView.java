@@ -80,6 +80,7 @@ public class CropView extends ImageView {
         gridPaint.setColor(Color.WHITE);
         gridPaint.setStrokeWidth(2);
         gridPaint.setStyle(Paint.Style.STROKE);
+        gridPaint.setAlpha(128);
 
         bitmapPaint.setFilterBitmap(true);
         viewportPaint.setColor(config.getViewportOverlayColor());
