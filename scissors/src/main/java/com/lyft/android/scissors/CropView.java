@@ -93,7 +93,9 @@ public class CropView extends ImageView {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        if (bitmap == null) {
+        // checking here if the bitmap is recycled to avoid a crash. The result is the image is not showed.
+        // Tested on Samsung Galaxy S6 Edge : API 22
+        if (this.bitmap == null || this.bitmap.isRecycled()) {
             return;
         }
 
