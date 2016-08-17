@@ -104,6 +104,11 @@ public class CropView extends ImageView {
         drawOverlay(canvas);
     }
 
+
+    public void setImageRotation(int rotation) {
+
+    }
+
     private void drawBitmap(Canvas canvas) {
         transform.reset();
         touchManager.applyPositioningAndScale(transform);
@@ -335,6 +340,7 @@ public class CropView extends ImageView {
         }
         return extensions;
     }
+
 
     /**
      * Optional extensions to perform common actions involving a {@link CropView}

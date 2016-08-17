@@ -83,6 +83,7 @@ class TouchManager {
     public void applyPositioningAndScale(Matrix matrix) {
         matrix.postTranslate(-bitmapWidth / 2.0f, -bitmapHeight / 2.0f);
         matrix.postScale(scale, scale);
+        matrix.postRotate(180);
         matrix.postTranslate(position.getX(), position.getY());
     }
 
