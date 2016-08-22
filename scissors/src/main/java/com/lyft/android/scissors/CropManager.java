@@ -68,8 +68,14 @@ public class CropManager {
             x = getPositionRelativeToCenter(posX, horizontalLimit, scale);
             y = getPositionRelativeToCenter(posY, verticalLimit, scale);
 
-            if (rotation == 180 || rotation == 270) {
+            if (rotation == 90) {
                 x = -x;
+            }
+            if (rotation == 180) {
+                x = -x;
+                y = -y;
+            }
+            if (rotation == 270) {
                 y = -y;
             }
         }
