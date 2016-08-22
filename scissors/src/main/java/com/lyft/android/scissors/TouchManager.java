@@ -17,6 +17,8 @@ package com.lyft.android.scissors;
 
 import android.annotation.TargetApi;
 import android.graphics.Matrix;
+import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Build;
 import android.view.MotionEvent;
@@ -35,17 +37,11 @@ class TouchManager {
     private float aspectRatio;
     private int viewportWidth;
     private int viewportHeight;
-    private int bitmapWidth;
-    private int bitmapHeight;
 
     private int verticalLimit;
     private int horizontalLimit;
 
-    private float scale = -1.0f;
     private TouchPoint position = new TouchPoint();
-
-    private int originalPositionX = -1;
-    private int originalPositionY = -1;
 
     public TouchManager(final int maxNumberOfTouchPoints, final CropViewConfig cropViewConfig) {
         this.maxNumberOfTouchPoints = maxNumberOfTouchPoints;
@@ -80,10 +76,10 @@ class TouchManager {
         }
     }
 
+    private final CropManager cropManager = new CropManager();
+
     public void applyPositioningAndScale(Matrix matrix) {
-        matrix.postTranslate(-bitmapWidth / 2.0f, -bitmapHeight / 2.0f);
-        matrix.postScale(scale, scale);
-//        matrix.postRotate(180);
+        cropManager.applyScaleRotation(matrix);
         matrix.postTranslate(position.getX(), position.getY());
     }
 
@@ -92,37 +88,21 @@ class TouchManager {
         imageBounds = new Rect(0, 0, availableWidth / 2, availableHeight / 2);
         setViewport(bitmapWidth, bitmapHeight, availableWidth, availableHeight);
 
-        this.bitmapWidth = bitmapWidth;
-        this.bitmapHeight = bitmapHeight;
-        if (bitmapWidth > 0 && bitmapHeight > 0) {
-            scale = -1.0f;
-            setMinimumScale();
-            setLimits();
-            setOriginalPosition();
+        boolean validBitmap = cropManager.reset(bitmapWidth, bitmapHeight, viewportWidth, viewportHeight);
+
+        if (validBitmap) {
+            Point limits = cropManager.getLimits(viewportWidth, viewportHeight);
+            horizontalLimit = limits.x;
+            verticalLimit = limits.y;
+            PointF originalPosition = cropManager.getOriginalPositionOnBitmap(horizontalLimit, verticalLimit);
+            position.set(originalPosition.x + imageBounds.right,
+                    originalPosition.y + imageBounds.bottom);
             ensureInsideViewport();
         }
     }
 
-    private void setOriginalPosition() {
-        float x = getPosition(originalPositionX, horizontalLimit, scale);
-        float y = getPosition(originalPositionY, verticalLimit, scale);
-        position.set(x + imageBounds.right,
-                y + imageBounds.bottom);
-    }
-
-    private static float getPosition(int originalPosition, int limit, float scale) {
-        float x;
-        if (originalPosition < 0) {
-            x = 0;
-        } else {
-            x = -originalPosition * 1.0f * scale + limit;
-        }
-        return x;
-    }
-
     public void setOriginalPosition(int x, int y) {
-        this.originalPositionX = x;
-        this.originalPositionY = y;
+        cropManager.setOriginalPosition(x, y);
     }
 
     public int getViewportWidth() {
@@ -153,8 +133,9 @@ class TouchManager {
         if (getDownCount() != 2) {
             return;
         }
-        updateScale();
-        setLimits();
+//        TODO, add in case we support zooming
+//        updateScale();
+//        getLimits();
     }
 
     private void ensureInsideViewport() {
@@ -227,32 +208,20 @@ class TouchManager {
         }
     }
 
-    private void setLimits() {
-        horizontalLimit = computeLimit((int) (bitmapWidth * scale), viewportWidth);
-        verticalLimit = computeLimit((int) (bitmapHeight * scale), viewportHeight);
-    }
-
-    private void setMinimumScale() {
-        final float fw = (float) viewportWidth / bitmapWidth;
-        final float fh = (float) viewportHeight / bitmapHeight;
-        minimumScale = Math.max(fw, fh);
-        scale = Math.max(scale, minimumScale);
-    }
-
     private void updateScale() {
-        TouchPoint current = vector(points[0], points[1]);
-        TouchPoint previous = previousVector(0, 1);
-        float currentDistance = current.getLength();
-        float previousDistance = previous.getLength();
-
-        float newScale = scale;
-        if (previousDistance != 0) {
-            newScale *= currentDistance / previousDistance;
-        }
-        newScale = newScale < minimumScale ? minimumScale : newScale;
-        newScale = newScale > maximumScale ? maximumScale : newScale;
-
-        scale = newScale;
+//        TouchPoint current = vector(points[0], points[1]);
+//        TouchPoint previous = previousVector(0, 1);
+//        float currentDistance = current.getLength();
+//        float previousDistance = previous.getLength();
+//
+//        float newScale = scale;
+//        if (previousDistance != 0) {
+//            newScale *= currentDistance / previousDistance;
+//        }
+//        newScale = newScale < minimumScale ? minimumScale : newScale;
+//        newScale = newScale > maximumScale ? maximumScale : newScale;
+//
+//        scale = newScale;
     }
 
     private boolean isPressed(int index) {
@@ -285,15 +254,15 @@ class TouchManager {
                 : vector(previousPoints[indexA], previousPoints[indexB]);
     }
 
-    private static int computeLimit(int bitmapSize, int viewportSize) {
-        return (bitmapSize - viewportSize) / 2;
-    }
-
     private static TouchPoint vector(TouchPoint a, TouchPoint b) {
         return TouchPoint.subtract(b, a);
     }
 
     private static boolean isUpAction(int actionMasked) {
         return actionMasked == MotionEvent.ACTION_POINTER_UP || actionMasked == MotionEvent.ACTION_UP;
+    }
+
+    public void setRotation(int rotation) {
+        cropManager.setRotation(rotation);
     }
 }
