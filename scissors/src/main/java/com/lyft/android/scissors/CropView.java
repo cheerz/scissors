@@ -318,23 +318,23 @@ public class CropView extends ImageView {
         float left = 0;
         float top = 0;
 
+        //Rotation 0
         if (rotation == 0) {
-//        Rotation 0
             left = (getWidth() - touchManager.getViewportWidth()) / 2 - tx;
             top = (getHeight() - touchManager.getViewportHeight()) / 2 - ty;
-        } else if (rotation == 90) {
-            // Rotation 270 (90)
-            rotation = 270;
+        }
+        //Rotation 270
+        else if (rotation == 90) {
             left = -((getHeight() + touchManager.getViewportHeight()) / 2 - ty);
             top = (getWidth() - touchManager.getViewportWidth()) / 2 - tx;
-
-        } else if (rotation == -90) {
-//        Rotation 90 (-90 for rotation values)
-            rotation = 90;
+        }
+        //Rotation 90
+        else if (rotation == -90) {
             left = (getHeight() - touchManager.getViewportHeight()) / 2 - ty;
             top = (getWidth() + touchManager.getViewportWidth()) / 2 - tx;
-        } else if (rotation == 180) {
-//        Rotation 180
+        }
+        //Rotation 180
+        else if (rotation == 180) {
             left = (getWidth() + touchManager.getViewportWidth()) / 2 - tx;
             top = -((getHeight() + touchManager.getViewportHeight()) / 2 - ty);
         }
