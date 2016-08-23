@@ -317,30 +317,40 @@ public class CropView extends ImageView {
 
         float left = 0;
         float top = 0;
+        int w = 0;
+        int h = 0;
 
         //Rotation 0
         if (rotation == 0) {
-            left = (getWidth() - touchManager.getViewportWidth()) / 2 - tx;
-            top = (getHeight() - touchManager.getViewportHeight()) / 2 - ty;
+            w = touchManager.getViewportWidth();
+            h = touchManager.getViewportHeight();
+            left = (getWidth() - w) / 2 - tx;
+            top = (getHeight() - h) / 2 - ty;
         }
         //Rotation 270
         else if (rotation == 90) {
-            left = -((getHeight() + touchManager.getViewportHeight()) / 2 - ty);
-            top = (getWidth() - touchManager.getViewportWidth()) / 2 - tx;
+            w = touchManager.getViewportHeight();
+            h = touchManager.getViewportWidth();
+            left = -((getHeight() + w) / 2 - ty);
+            top = (getWidth() - h) / 2 - tx;
         }
         //Rotation 90
         else if (rotation == -90) {
-            left = (getHeight() - touchManager.getViewportHeight()) / 2 - ty;
-            top = -((getWidth() + touchManager.getViewportWidth()) / 2 - tx);
+            w = touchManager.getViewportHeight();
+            h = touchManager.getViewportWidth();
+            left = (getHeight() - w) / 2 - ty;
+            top = -((getWidth() + h) / 2 - tx);
         }
         //Rotation 180
         else if (rotation == 180) {
-            left = -((getWidth() + touchManager.getViewportWidth()) / 2 - tx);
-            top = -((getHeight() + touchManager.getViewportHeight()) / 2 - ty);
+            w = touchManager.getViewportWidth();
+            h = touchManager.getViewportHeight();
+            left = -((getWidth() + w) / 2 - tx);
+            top = -((getHeight() + h) / 2 - ty);
         }
 
         return new RectF(left / scale, top / scale,
-                (left + touchManager.getViewportWidth()) / scale, (top + touchManager.getViewportHeight()) / scale);
+                (left + w) / scale, (top + h) / scale);
 
     }
 

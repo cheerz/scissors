@@ -70,12 +70,10 @@ public class CropManager {
 
             if (rotation == 90) {
                 x = -x;
-            }
-            if (rotation == 180) {
+            } else if (rotation == 180) {
                 x = -x;
                 y = -y;
-            }
-            if (rotation == 270) {
+            } else if (rotation == 270) {
                 y = -y;
             }
         }
