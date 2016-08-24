@@ -104,6 +104,13 @@ public class CropView extends ImageView {
         drawOverlay(canvas);
     }
 
+
+    public void setImageRotation(int rotation) {
+        touchManager.setRotation(rotation);
+        resetTouchManager();
+        invalidate();
+    }
+
     private void drawBitmap(Canvas canvas) {
         transform.reset();
         touchManager.applyPositioningAndScale(transform);
@@ -295,12 +302,55 @@ public class CropView extends ImageView {
            ⎡sxcosψ  −sxsinψ tx
             sysinψ   sycosψ ty
             0           0   1  ]
+
+           Trigonometry:
+           https://css-tricks.com/get-value-of-css-rotation-through-javascript/
          */
         transform.getValues(values);
-        float scale = values[0];
-        float left = (getWidth() - touchManager.getViewportWidth()) / 2 - values[2];
-        float top = (getHeight() - touchManager.getViewportHeight()) / 2 - values[5];
-        return new RectF(left / scale, top / scale, (left + touchManager.getViewportWidth()) / scale, (top + touchManager.getViewportHeight()) / scale);
+        float scaleX = values[Matrix.MSCALE_X];
+        float skewX = values[Matrix.MSKEW_X];
+        float scale = (float) Math.sqrt(scaleX * scaleX + skewX * skewX);
+        int rotation = (int) Math.round(Math.atan2(skewX, scaleX) * (180 / Math.PI));
+
+        float tx = values[Matrix.MTRANS_X];
+        float ty = values[Matrix.MTRANS_Y];
+
+        float left = 0;
+        float top = 0;
+        int w = 0;
+        int h = 0;
+
+        //Rotation 0
+        if (rotation == 0) {
+            w = touchManager.getViewportWidth();
+            h = touchManager.getViewportHeight();
+            left = (getWidth() - w) / 2 - tx;
+            top = (getHeight() - h) / 2 - ty;
+        }
+        //Rotation 270
+        else if (rotation == 90) {
+            w = touchManager.getViewportHeight();
+            h = touchManager.getViewportWidth();
+            left = -((getHeight() + w) / 2 - ty);
+            top = (getWidth() - h) / 2 - tx;
+        }
+        //Rotation 90
+        else if (rotation == -90) {
+            w = touchManager.getViewportHeight();
+            h = touchManager.getViewportWidth();
+            left = (getHeight() - w) / 2 - ty;
+            top = -((getWidth() + h) / 2 - tx);
+        }
+        //Rotation 180
+        else if (rotation == 180) {
+            w = touchManager.getViewportWidth();
+            h = touchManager.getViewportHeight();
+            left = -((getWidth() + w) / 2 - tx);
+            top = -((getHeight() + h) / 2 - ty);
+        }
+
+        return new RectF(left / scale, top / scale,
+                (left + w) / scale, (top + h) / scale);
 
     }
 
@@ -335,6 +385,7 @@ public class CropView extends ImageView {
         }
         return extensions;
     }
+
 
     /**
      * Optional extensions to perform common actions involving a {@link CropView}
