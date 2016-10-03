@@ -50,9 +50,7 @@ class TouchManager {
         points = new TouchPoint[maxNumberOfTouchPoints];
         previousPoints = new TouchPoint[maxNumberOfTouchPoints];
         minimumScale = 1;
-//        cropViewConfig.getMinScale();
         maximumScale = 3;
-//        cropViewConfig.getMaxScale();
     }
 
     @TargetApi(Build.VERSION_CODES.FROYO)
@@ -224,14 +222,6 @@ class TouchManager {
 
         cropManager.scale(scaleFactor);
 
-//        float newScale = scale;
-//        if (previousDistance != 0) {
-//            newScale *= currentDistance / previousDistance;
-//        }
-//        newScale = newScale < minimumScale ? minimumScale : newScale;
-//        newScale = newScale > maximumScale ? maximumScale : newScale;
-//
-//        scale = newScale;
     }
 
     private boolean isPressed(int index) {
