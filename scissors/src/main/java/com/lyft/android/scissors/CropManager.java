@@ -10,6 +10,7 @@ import android.graphics.PointF;
 public class CropManager {
 
     private float originalSrcViewScaleRatio = -1.0f;
+    private float originalScale = 1f;
     private int bitmapWidth;
     private int bitmapHeight;
     private int originalPositionX = -1;
@@ -28,6 +29,7 @@ public class CropManager {
         this.rotation = (rotation + 360) % 360;
         originalPositionX = -1;
         originalPositionY = -1;
+        originalScale = 1f;
     }
 
     public boolean reset(int bitmapWidth, int bitmapHeight, int viewportWidth, int viewportHeight) {
@@ -94,9 +96,10 @@ public class CropManager {
 
     }
 
-    void setOriginalPosition(int x, int y) {
+    void setOriginalPositionAndScale(int x, int y, float scale) {
         this.originalPositionX = x;
         this.originalPositionY = y;
+        this.originalScale = scale;
     }
 
     private void findOriginalScaleFactor(int availableWidth, int availableHeight) {
@@ -104,7 +107,7 @@ public class CropManager {
         final float fw = (float) availableWidth / point.x;
         final float fh = (float) availableHeight / point.y;
         float minimumScale = Math.max(fw, fh);
-        originalSrcViewScaleRatio = minimumScale;
+        originalSrcViewScaleRatio = minimumScale * originalScale;
         scale = originalSrcViewScaleRatio;
     }
 

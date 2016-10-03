@@ -107,8 +107,8 @@ class TouchManager {
         verticalLimit = limits.y;
     }
 
-    public void setOriginalPosition(int x, int y) {
-        cropManager.setOriginalPosition(x, y);
+    public void setOriginalPositionAndScale(int x, int y, float scale) {
+        cropManager.setOriginalPositionAndScale(x, y, scale);
     }
 
     public int getViewportWidth() {
