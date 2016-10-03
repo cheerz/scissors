@@ -105,7 +105,7 @@ public class CropView extends ImageView {
     }
 
 
-    public void setImageRotation(int rotation) {
+    public void rotateImage(int rotation) {
         touchManager.setRotation(rotation);
         resetTouchManager();
         invalidate();

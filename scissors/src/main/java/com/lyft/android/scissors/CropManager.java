@@ -9,12 +9,14 @@ import android.graphics.PointF;
  */
 public class CropManager {
 
-    private float scale = -1.0f;
+    private float originalSrcViewScaleRatio = -1.0f;
     private int bitmapWidth;
     private int bitmapHeight;
     private int originalPositionX = -1;
     private int originalPositionY = -1;
     private int rotation = 0;
+
+    private float scale = 1;
 
     public void applyScaleRotation(Matrix matrix) {
         matrix.postTranslate(-bitmapWidth / 2.0f, -bitmapHeight / 2.0f);
@@ -32,10 +34,17 @@ public class CropManager {
         this.bitmapWidth = bitmapWidth;
         this.bitmapHeight = bitmapHeight;
         if (bitmapWidth > 0 && bitmapHeight > 0) {
-            setScale(viewportWidth, viewportHeight);
+            findOriginalScaleFactor(viewportWidth, viewportHeight);
             return true;
         }
         return false;
+    }
+
+    public void scale(float scaleFactor) {
+        float newScale = scaleFactor * scale;
+        newScale = newScale < originalSrcViewScaleRatio * 1 ? originalSrcViewScaleRatio : newScale;
+        newScale = newScale > originalSrcViewScaleRatio * 3 ? originalSrcViewScaleRatio * 3 : newScale;
+        scale = newScale;
     }
 
     private Point getRotatedBitmapDims() {
@@ -65,8 +74,8 @@ public class CropManager {
                 posY = originalPositionX;
             }
 
-            x = getPositionRelativeToCenter(posX, horizontalLimit, scale);
-            y = getPositionRelativeToCenter(posY, verticalLimit, scale);
+            x = getPositionRelativeToCenter(posX, horizontalLimit, originalSrcViewScaleRatio);
+            y = getPositionRelativeToCenter(posY, verticalLimit, originalSrcViewScaleRatio);
 
             if (rotation == 90) {
                 x = -x;
@@ -90,15 +99,17 @@ public class CropManager {
         this.originalPositionY = y;
     }
 
-    private void setScale(int availableWidth, int availableHeight) {
+    private void findOriginalScaleFactor(int availableWidth, int availableHeight) {
         Point point = getRotatedBitmapDims();
         final float fw = (float) availableWidth / point.x;
         final float fh = (float) availableHeight / point.y;
         float minimumScale = Math.max(fw, fh);
-        scale = minimumScale;
+        originalSrcViewScaleRatio = minimumScale;
+        scale = originalSrcViewScaleRatio;
     }
 
     private static int computeLimit(int bitmapSize, int viewportSize) {
         return (bitmapSize - viewportSize) / 2;
     }
+
 }

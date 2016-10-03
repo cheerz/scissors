@@ -49,8 +49,10 @@ class TouchManager {
 
         points = new TouchPoint[maxNumberOfTouchPoints];
         previousPoints = new TouchPoint[maxNumberOfTouchPoints];
-        minimumScale = cropViewConfig.getMinScale();
-        maximumScale = cropViewConfig.getMaxScale();
+        minimumScale = 1;
+//        cropViewConfig.getMinScale();
+        maximumScale = 3;
+//        cropViewConfig.getMaxScale();
     }
 
     @TargetApi(Build.VERSION_CODES.FROYO)
@@ -91,14 +93,18 @@ class TouchManager {
         boolean validBitmap = cropManager.reset(bitmapWidth, bitmapHeight, viewportWidth, viewportHeight);
 
         if (validBitmap) {
-            Point limits = cropManager.getLimits(viewportWidth, viewportHeight);
-            horizontalLimit = limits.x;
-            verticalLimit = limits.y;
+            resetLimits();
             PointF originalPosition = cropManager.getOriginalPositionOnBitmap(horizontalLimit, verticalLimit);
             position.set(originalPosition.x + imageBounds.right,
                     originalPosition.y + imageBounds.bottom);
             ensureInsideViewport();
         }
+    }
+
+    public void resetLimits() {
+        Point limits = cropManager.getLimits(viewportWidth, viewportHeight);
+        horizontalLimit = limits.x;
+        verticalLimit = limits.y;
     }
 
     public void setOriginalPosition(int x, int y) {
@@ -133,9 +139,8 @@ class TouchManager {
         if (getDownCount() != 2) {
             return;
         }
-//        TODO, add in case we support zooming
-//        updateScale();
-//        getLimits();
+        updateScale();
+        resetLimits();
     }
 
     private void ensureInsideViewport() {
@@ -208,12 +213,17 @@ class TouchManager {
         }
     }
 
+
     private void updateScale() {
-//        TouchPoint current = vector(points[0], points[1]);
-//        TouchPoint previous = previousVector(0, 1);
-//        float currentDistance = current.getLength();
-//        float previousDistance = previous.getLength();
-//
+        TouchPoint current = vector(points[0], points[1]);
+        TouchPoint previous = previousVector(0, 1);
+        float currentDistance = current.getLength();
+        float previousDistance = previous.getLength();
+
+        float scaleFactor = previousDistance == 0 ? 1 : currentDistance / previousDistance;
+
+        cropManager.scale(scaleFactor);
+
 //        float newScale = scale;
 //        if (previousDistance != 0) {
 //            newScale *= currentDistance / previousDistance;
