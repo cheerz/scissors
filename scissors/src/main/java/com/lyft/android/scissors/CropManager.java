@@ -9,12 +9,15 @@ import android.graphics.PointF;
  */
 public class CropManager {
 
-    private float scale = -1.0f;
+    private float originalSrcViewScaleRatio = -1.0f;
+    private float originalScale = 1f;
     private int bitmapWidth;
     private int bitmapHeight;
     private int originalPositionX = -1;
     private int originalPositionY = -1;
     private int rotation = 0;
+
+    private float scale = 1;
 
     public void applyScaleRotation(Matrix matrix) {
         matrix.postTranslate(-bitmapWidth / 2.0f, -bitmapHeight / 2.0f);
@@ -26,16 +29,24 @@ public class CropManager {
         this.rotation = (rotation + 360) % 360;
         originalPositionX = -1;
         originalPositionY = -1;
+        originalScale = 1f;
     }
 
     public boolean reset(int bitmapWidth, int bitmapHeight, int viewportWidth, int viewportHeight) {
         this.bitmapWidth = bitmapWidth;
         this.bitmapHeight = bitmapHeight;
         if (bitmapWidth > 0 && bitmapHeight > 0) {
-            setScale(viewportWidth, viewportHeight);
+            findOriginalScaleFactor(viewportWidth, viewportHeight);
             return true;
         }
         return false;
+    }
+
+    public void scale(float scaleFactor) {
+        float newScale = scaleFactor * scale;
+        newScale = newScale < originalSrcViewScaleRatio * 1 ? originalSrcViewScaleRatio : newScale;
+        newScale = newScale > originalSrcViewScaleRatio * 3 ? originalSrcViewScaleRatio * 3 : newScale;
+        scale = newScale;
     }
 
     private Point getRotatedBitmapDims() {
@@ -65,8 +76,8 @@ public class CropManager {
                 posY = originalPositionX;
             }
 
-            x = getPositionRelativeToCenter(posX, horizontalLimit, scale);
-            y = getPositionRelativeToCenter(posY, verticalLimit, scale);
+            x = getPositionRelativeToCenter(posX, horizontalLimit, originalSrcViewScaleRatio);
+            y = getPositionRelativeToCenter(posY, verticalLimit, originalSrcViewScaleRatio);
 
             if (rotation == 90) {
                 x = -x;
@@ -85,20 +96,23 @@ public class CropManager {
 
     }
 
-    void setOriginalPosition(int x, int y) {
+    void setOriginalPositionAndScale(int x, int y, float scale) {
         this.originalPositionX = x;
         this.originalPositionY = y;
+        this.originalScale = scale;
     }
 
-    private void setScale(int availableWidth, int availableHeight) {
+    private void findOriginalScaleFactor(int availableWidth, int availableHeight) {
         Point point = getRotatedBitmapDims();
         final float fw = (float) availableWidth / point.x;
         final float fh = (float) availableHeight / point.y;
         float minimumScale = Math.max(fw, fh);
-        scale = minimumScale;
+        originalSrcViewScaleRatio = minimumScale * originalScale;
+        scale = originalSrcViewScaleRatio;
     }
 
     private static int computeLimit(int bitmapSize, int viewportSize) {
         return (bitmapSize - viewportSize) / 2;
     }
+
 }

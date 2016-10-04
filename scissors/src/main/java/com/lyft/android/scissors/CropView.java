@@ -105,7 +105,7 @@ public class CropView extends ImageView {
     }
 
 
-    public void setImageRotation(int rotation) {
+    public void rotateImage(int rotation) {
         touchManager.setRotation(rotation);
         resetTouchManager();
         invalidate();
@@ -246,8 +246,8 @@ public class CropView extends ImageView {
         touchManager.resetFor(bitmapWidth, bitmapHeight, getWidth(), getHeight());
     }
 
-    public void setOriginalPosition(int x, int y) {
-        touchManager.setOriginalPosition(x, y);
+    public void setOriginalPosition(int x, int y, float scale) {
+        touchManager.setOriginalPositionAndScale(x, y, scale);
     }
 
     @Override
