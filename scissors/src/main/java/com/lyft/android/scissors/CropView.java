@@ -231,6 +231,11 @@ public class CropView extends ImageView {
         invalidate();
     }
 
+    public void onBitmapColorsModified(Bitmap bitmap) {
+        this.bitmap = bitmap;
+        invalidate();
+    }
+
     /**
      * @return Current working Bitmap or <code>null</code> if none has been set yet.
      */
