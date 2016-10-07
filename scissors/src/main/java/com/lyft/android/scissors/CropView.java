@@ -255,6 +255,10 @@ public class CropView extends ImageView {
         touchManager.setOriginalPositionAndScale(x, y, scale);
     }
 
+    public void setOriginalPosition(int x, int y) {
+        touchManager.setOriginalPositionAndScale(x, y, 0);
+    }
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         super.dispatchTouchEvent(event);
