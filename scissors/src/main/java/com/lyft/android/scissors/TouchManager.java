@@ -92,7 +92,7 @@ class TouchManager {
 
         if (validBitmap) {
             resetLimits();
-            PointF originalPosition = cropManager.getOriginalPositionOnBitmap(horizontalLimit, verticalLimit);
+            PointF originalPosition = cropManager.getOriginalPositionOnBitmap(horizontalLimit, verticalLimit, bitmapWidth, bitmapHeight);
             position.set(originalPosition.x + imageBounds.right,
                     originalPosition.y + imageBounds.bottom);
             ensureInsideViewport();
@@ -264,5 +264,17 @@ class TouchManager {
 
     public void setRotation(int rotation) {
         cropManager.setRotation(rotation);
+    }
+
+    public void setOriginalPosition(float x, float y) {
+        cropManager.setOriginalPosition(x, y);
+    }
+
+    public void removeOriginalPosition() {
+        cropManager.removeOriginalPosition();
+    }
+
+    public void scaleImage(float scale) {
+        cropManager.scaleImage(scale);
     }
 }

@@ -13,8 +13,8 @@ public class CropManager {
     private float originalScale = 1f;
     private int bitmapWidth;
     private int bitmapHeight;
-    private int originalPositionX = -1;
-    private int originalPositionY = -1;
+    private float originalPositionX = -1;
+    private float originalPositionY = -1;
     private int rotation = 0;
 
     private float scale = 1;
@@ -27,9 +27,20 @@ public class CropManager {
 
     public void setRotation(int rotation) {
         this.rotation = (rotation + 360) % 360;
-        originalPositionX = -1;
-        originalPositionY = -1;
-        originalScale = 1f;
+    }
+
+    public void scaleImage(float scale) {
+        originalScale = scale;
+    }
+
+    public void setOriginalPosition(float x, float y) {
+        this.originalPositionX = x;
+        this.originalPositionY = y;
+    }
+
+    public void removeOriginalPosition() {
+        this.originalPositionX = -1;
+        this.originalPositionY = -1;
     }
 
     public boolean reset(int bitmapWidth, int bitmapHeight, int viewportWidth, int viewportHeight) {
@@ -63,17 +74,18 @@ public class CropManager {
         return new Point(horizontalLimit, verticalLimit);
     }
 
-    PointF getOriginalPositionOnBitmap(int horizontalLimit, int verticalLimit) {
+    PointF getOriginalPositionOnBitmap(int horizontalLimit, int verticalLimit, int bitmapWidth, int bitmapHeight) {
         float x = 0;
         float y = 0;
 
         if (originalPositionX >= 0 && originalPositionY >= 0) {
-            int posX = originalPositionX;
-            int posY = originalPositionY;
+            int posX = (int) (originalPositionX * bitmapWidth);
+            int posY = (int) (originalPositionY * bitmapHeight);
 
             if (rotation % 180 == 90) {
-                posX = originalPositionY;
-                posY = originalPositionX;
+                int ref = posX;
+                posX = posY;
+                posY = ref;
             }
 
             x = getPositionRelativeToCenter(posX, horizontalLimit, originalSrcViewScaleRatio);
