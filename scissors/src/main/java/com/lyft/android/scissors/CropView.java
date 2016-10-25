@@ -231,6 +231,11 @@ public class CropView extends ImageView {
         invalidate();
     }
 
+    public void onBitmapColorsModified(Bitmap bitmap) {
+        this.bitmap = bitmap;
+        invalidate();
+    }
+
     /**
      * @return Current working Bitmap or <code>null</code> if none has been set yet.
      */
@@ -248,6 +253,22 @@ public class CropView extends ImageView {
 
     public void setOriginalPosition(int x, int y, float scale) {
         touchManager.setOriginalPositionAndScale(x, y, scale);
+    }
+
+    public void setOriginalImagePosition(float x, float y) {
+        touchManager.setOriginalPosition(x, y);
+    }
+
+    public void removeOriginalImagePosition() {
+        touchManager.removeOriginalPosition();
+    }
+
+    public void scaleImage(float scale) {
+        touchManager.scaleImage(scale);
+    }
+
+    public void setOriginalPosition(int x, int y) {
+        touchManager.setOriginalPositionAndScale(x, y, 0);
     }
 
     @Override
@@ -385,7 +406,6 @@ public class CropView extends ImageView {
         }
         return extensions;
     }
-
 
     /**
      * Optional extensions to perform common actions involving a {@link CropView}
