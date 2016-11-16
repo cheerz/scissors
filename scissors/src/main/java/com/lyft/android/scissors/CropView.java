@@ -251,10 +251,6 @@ public class CropView extends ImageView {
         touchManager.resetFor(bitmapWidth, bitmapHeight, getWidth(), getHeight());
     }
 
-    public void setOriginalPosition(int x, int y, float scale) {
-        touchManager.setOriginalPositionAndScale(x, y, scale);
-    }
-
     public void setOriginalImagePosition(float x, float y) {
         touchManager.setOriginalPosition(x, y);
     }
@@ -265,10 +261,6 @@ public class CropView extends ImageView {
 
     public void scaleImage(float scale) {
         touchManager.scaleImage(scale);
-    }
-
-    public void setOriginalPosition(int x, int y) {
-        touchManager.setOriginalPositionAndScale(x, y, 0);
     }
 
     @Override
