@@ -24,6 +24,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -37,6 +39,8 @@ import android.widget.ImageView;
 
 import com.lyft.android.scissors.CropViewExtensions.CropRequest;
 import com.lyft.android.scissors.CropViewExtensions.LoadRequest;
+import com.lyft.android.scissors.shape.RectShapeDrawer;
+import com.lyft.android.scissors.shape.ShapeDrawer;
 
 import java.io.File;
 import java.io.OutputStream;
@@ -59,6 +63,9 @@ public class CropView extends ImageView {
     private Extensions extensions;
 
     private boolean showGrid;
+
+    @Nullable
+    private ShapeDrawer shapeDrawer = new RectShapeDrawer();
 
     public CropView(Context context) {
         super(context);
@@ -102,8 +109,18 @@ public class CropView extends ImageView {
 
         drawBitmap(canvas);
         drawOverlay(canvas);
+        if (shapeDrawer != null)
+            shapeDrawer.drawShapeAndBorder(canvas,
+                    touchManager.getViewportWidth(),
+                    touchManager.getViewportHeight(),
+                    getWidth(),
+                    getHeight(),
+                    viewportPaint);
     }
 
+    public void setShapeDrawer(@Nullable ShapeDrawer shapeDrawer) {
+        this.shapeDrawer = shapeDrawer;
+    }
 
     public void rotateImage(int rotation) {
         touchManager.setRotation(rotation);
@@ -114,7 +131,6 @@ public class CropView extends ImageView {
     private void drawBitmap(Canvas canvas) {
         transform.reset();
         touchManager.applyPositioningAndScale(transform);
-
         canvas.drawBitmap(bitmap, transform, bitmapPaint);
     }
 
@@ -129,23 +145,9 @@ public class CropView extends ImageView {
         canvas.drawRect(getWidth() - left, top, getWidth(), getHeight() - top, viewportPaint);
         canvas.drawRect(0, getHeight() - top, getWidth(), getHeight(), viewportPaint);
 
-        drawBorder(canvas, viewportWidth, viewportHeight, left, top);
-
         if (showGrid)
             drawGrid(canvas, viewportWidth, viewportHeight, left, top);
 
-
-    }
-
-    private void drawBorder(Canvas canvas, int viewportWidth, int viewportHeight, int left, int top) {
-        float[] border = new float[]{
-                left, top, left + viewportWidth, top,
-                left + viewportWidth, top, left + viewportWidth, top + viewportHeight,
-                left, top + viewportHeight, left + viewportWidth, top + viewportHeight,
-                left, top, left, top + viewportHeight
-        };
-
-        canvas.drawLines(border, borderPaint);
     }
 
     private void drawGrid(Canvas canvas, int viewportWidth, int viewportHeight, int left, int top) {
