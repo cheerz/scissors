@@ -47,6 +47,7 @@ import java.io.OutputStream;
 
 /**
  * An {@link ImageView} with a fixed viewport and cropping capabilities.
+ *
  */
 public class CropView extends ImageView {
 
