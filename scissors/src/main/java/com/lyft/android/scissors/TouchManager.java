@@ -67,7 +67,8 @@ class TouchManager {
             updateCurrentAndPreviousPoints(event);
         }
 
-        handleDragGesture();
+        if (isMoveAction(event.getActionMasked()))
+            handleDragGesture();
         if (!cropViewConfig.isDisableScaling())
             handlePinchGesture();
 
@@ -256,6 +257,10 @@ class TouchManager {
 
     private static boolean isUpAction(int actionMasked) {
         return actionMasked == MotionEvent.ACTION_POINTER_UP || actionMasked == MotionEvent.ACTION_UP;
+    }
+
+    private static boolean isMoveAction(int actionMasked) {
+        return actionMasked == MotionEvent.ACTION_MOVE;
     }
 
     public void setRotation(int rotation) {
