@@ -23,7 +23,7 @@ dependencies {
     // Test
     testCompile 'junit:junit:' + rootProject.ext.junitVersion
     testCompile 'org.mockito:mockito-core:' + rootProject.ext.mockitoVersion
-    testCompile 'org.robolectric:robolectric:' + rootProject.ext.robolectricVersion
+    testCompile 'org.robolectric:robolectric:3.0'
     testCompile 'org.assertj:assertj-core:' + rootProject.ext.assertjVersion
     // Support Annotations
     compile 'com.android.support:support-annotations:' + rootProject.ext.supportVersion

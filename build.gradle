@@ -4,7 +4,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.3'
+        classpath 'com.android.tools.build:gradle:2.3.0'
     }
 }
 
@@ -16,13 +16,8 @@ allprojects {
 }
 
 ext {
-    minSdkVersion = 14
-    compileSdkVersion = 22
-    buildToolsVersion = '22.0.1'
-
     junitVersion = '4.12'
     mockitoVersion = '1.10.19'
-    robolectricVersion = '3.0'
     assertjVersion = '1.7.1'
     supportVersion = '22.2.1'
 
