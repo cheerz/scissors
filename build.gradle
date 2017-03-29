@@ -22,7 +22,6 @@ ext {
 
     junitVersion = '4.12'
     mockitoVersion = '1.10.19'
-    robolectricVersion = '3.0'
     assertjVersion = '1.7.1'
     supportVersion = '22.2.1'
 
